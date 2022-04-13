@@ -1,10 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { useHttp } from "../hooks/httpHook";
+import { useMessage } from "../hooks/messageHook";
 
 export const AuthPage = () => {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const message = useMessage();
+  const { loading, error, request, clearError } = useHttp();
+
+  useEffect(() => {
+    message(error);
+    clearError();
+  }, [error, message, clearError]);
+
+  const [form, setForm] = useState({ email: "", password: "" });
 
   const changeHandler = (event) => {
     setForm({ ...form, [event.target.id]: event.target.value });
+  };
+
+  const registerHandler = async () => {
+    try {
+      const data = await request("/api/auth/register", "POST", { ...form });
+      console.log("data", data);
+      message(data.message)
+    } catch (error) {}
+  };
+
+  const loginHandler = async () => {
+    try {
+      const data = await request("/api/auth/login", "POST", { ...form });
+      console.log("data", data);
+      message(data.message)
+    } catch (error) {}
   };
 
   return (
@@ -30,10 +56,16 @@ export const AuthPage = () => {
             <button
               className="btn waves-effect yellow darken-4"
               style={{ marginRight: 10 }}
+              disabled={loading}
+              onClick={loginHandler}
             >
               Log in
             </button>
-            <button className="btn waves-effect grey lighten-1 black-text">
+            <button
+              className="btn waves-effect grey lighten-1 black-text"
+              disabled={loading}
+              onClick={registerHandler}
+            >
               Sign in
             </button>
           </div>
