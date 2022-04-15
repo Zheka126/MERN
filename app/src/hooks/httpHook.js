@@ -22,10 +22,10 @@ export const useHttp = () => {
         setLoading(false);
 
         return data;
-      } catch (error) {
+      } catch (e) {
         setLoading(false);
-        setError(error.message);
-        throw error;
+        setError(e.message);
+        throw e;
       }
     },
     []

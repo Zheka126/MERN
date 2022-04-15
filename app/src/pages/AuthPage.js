@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useHttp } from "../hooks/httpHook";
-import { useMessage } from "../hooks/messageHook";
+import React, { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import { useHttp } from '../hooks/httpHook';
+import { useMessage } from '../hooks/messageHook';
 
 export const AuthPage = () => {
+  const auth = useContext(AuthContext);
   const message = useMessage();
   const { loading, error, request, clearError } = useHttp();
 
@@ -11,7 +13,7 @@ export const AuthPage = () => {
     clearError();
   }, [error, message, clearError]);
 
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ email: '', password: '' });
 
   const changeHandler = (event) => {
     setForm({ ...form, [event.target.id]: event.target.value });
@@ -19,17 +21,16 @@ export const AuthPage = () => {
 
   const registerHandler = async () => {
     try {
-      const data = await request("/api/auth/register", "POST", { ...form });
-      console.log("data", data);
-      message(data.message)
+      const data = await request('/api/auth/register', 'POST', { ...form });
+      message(data.message);
     } catch (error) {}
   };
 
   const loginHandler = async () => {
     try {
-      const data = await request("/api/auth/login", "POST", { ...form });
-      console.log("data", data);
-      message(data.message)
+      const data = await request('/api/auth/login', 'POST', { ...form });
+      auth.login(data.token, data.userId);
+      message(data.message);
     } catch (error) {}
   };
 
@@ -42,13 +43,23 @@ export const AuthPage = () => {
             <span className="card-title">Authorization</span>
             <div>
               <div className="input-field">
-                <input type="text" id="email" onChange={changeHandler} />
-                <label for="email">Email</label>
+                <input
+                  type="text"
+                  id="email"
+                  value={form.email}
+                  onChange={changeHandler}
+                />
+                <label htmlFor="email">Email</label>
               </div>
 
               <div className="input-field">
-                <input id="password" type="password" onChange={changeHandler} />
-                <label for="password">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  value={form.password}
+                  onChange={changeHandler}
+                />
+                <label htmlFor="password">Password</label>
               </div>
             </div>
           </div>

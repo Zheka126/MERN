@@ -5,10 +5,12 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js",
+    "start": "cross-env NODE_ENV=production node app.js",
     "server": "nodemon app.js",
     "app": "npm run start --prefix app",
-    "dev": "concurrently \"npm run server\" \"npm run app\""
+    "app:install": "npm install --prefix app",
+    "app:build": "npm run build --prefix app",
+    "dev": "cross-env NODE_ENV=development concurrently \"npm run server\" \"npm run client\""
   },
   "keywords": [
     "mern",
@@ -22,10 +24,12 @@
     "express": "^4.17.3",
     "express-validator": "^6.14.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.2.10"
+    "mongoose": "^6.2.10",
+    "shortid": "^2.2.16"
   },
   "devDependencies": {
     "concurrently": "^7.1.0",
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.15"
   }
 }
